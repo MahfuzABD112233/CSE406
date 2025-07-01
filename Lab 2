@@ -43,14 +43,14 @@ void loop() {
   // for your specific water levels.
   // Example calibrated values (assuming higher sensorValue means MORE water):
   // const int CAL_DRY_VALUE        = 100; // Example: Value when sensor is completely dry
-  // const int CAL_LOW_WATER_VALUE  = 250; // Example: Value when water is at 'low' level
-  // const int CAL_MEDIUM_WATER_VALUE = 400; // Example: Value when water is at 'medium' level
-  // const int CAL_HIGH_WATER_VALUE = 600; // Example: Value when water is at 'high' level
+  // const int CAL_LOW_WATER_VALUE  = 300; // Example: Value when water is at 'low' level
+  // const int CAL_MEDIUM_WATER_VALUE = 500; // Example: Value when water is at 'medium' level
+  // const int CAL_HIGH_WATER_VALUE = 700; // Example: Value when water is at 'high' level
 
   // Based on these, your thresholds would be:
-  const int YOUR_LOW_THRESHOLD    = 250; // Adjust this based on your sensor's value for LOW water
-  const int YOUR_MEDIUM_THRESHOLD = 400; // Adjust this based on your sensor's value for MEDIUM water
-  const int YOUR_HIGH_THRESHOLD   = 600; // Adjust this based on your sensor's value for HIGH water
+  const int YOUR_LOW_THRESHOLD    = 300; // Adjust this based on your sensor's value for LOW water
+  const int YOUR_MEDIUM_THRESHOLD = 500; // Adjust this based on your sensor's value for MEDIUM water
+  const int YOUR_HIGH_THRESHOLD   = 700; // Adjust this based on your sensor's value for HIGH water
 
   // Logic to control the LEDs based on the water level
   // The order of 'if' and 'else if' statements is important.
@@ -74,7 +74,7 @@ void loop() {
     Serial.println("MEDIUM");
   }
   else if (sensorValue >= YOUR_LOW_THRESHOLD) {
-    // Water is at a low leve (but not medium or high)
+    // Water is at a low level (but not medium or high)
     digitalWrite(highOutput, LOW);    // Green LED OFF
     digitalWrite(mediumOutput, LOW);  // Yellow LED OFF
     digitalWrite(lowOutput, HIGH);    // Red LED ON
