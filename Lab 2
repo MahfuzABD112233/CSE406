@@ -1,0 +1,92 @@
+// Corrected Arduino water level sensor code for 3 indicator LEDs
+// Sensor pin: A0 analog Input (S wire)
+// LED pins:
+//   Digital Pin 2: Red LED (Low water)
+//   Digital Pin 3: Yellow LED (Medium water)
+//   Digital Pin 4: Green LED (High water)
+
+#define sensorPin A0      // Connect the 'S' (Signal) wire of your water sensor here
+#define lowOutput    2    // Digital pin for the Red LED (Low water level indicator)
+#define mediumOutput 3    // Digital pin for the Yellow LED (Medium water level indicator)
+#define highOutput   4    // Digital pin for the Green LED (High water level indicator)
+
+void setup() {
+  Serial.begin(9600); // Initialize serial communication for debugging
+
+  // Set LED pins as OUTPUTs
+  pinMode(lowOutput, OUTPUT);
+  pinMode(mediumOutput, OUTPUT);
+  pinMode(highOutput, OUTPUT);
+
+  // Ensure all LEDs are OFF at the start
+  digitalWrite(lowOutput, LOW);
+  digitalWrite(mediumOutput, LOW);
+  digitalWrite(highOutput, LOW);
+
+  Serial.println("Water Level Monitor Started.");
+  Serial.println("----------------------------");
+  Serial.println("Use Serial Monitor to calibrate your sensor.");
+  Serial.println("Observe 'Current Sensor Value' for DRY, LOW, MEDIUM, HIGH water levels.");
+  Serial.println("Then, update the 'YOUR_...' thresholds in the code accordingly.");
+  Serial.println("----------------------------");
+}
+
+void loop() {
+  int sensorValue = analogRead(sensorPin); // Read the analog value from the water sensor
+
+  Serial.print("Current Sensor Value: ");
+  Serial.print(sensorValue);
+  Serial.print(" | Water Level: ");
+
+  // --- CALIBRATION IS CRUCIAL HERE ---
+  // Replace these placeholder values with the actual sensor readings you get
+  // for your specific water levels.
+  // Example calibrated values (assuming higher sensorValue means MORE water):
+  // const int CAL_DRY_VALUE        = 100; // Example: Value when sensor is completely dry
+  // const int CAL_LOW_WATER_VALUE  = 250; // Example: Value when water is at 'low' level
+  // const int CAL_MEDIUM_WATER_VALUE = 400; // Example: Value when water is at 'medium' level
+  // const int CAL_HIGH_WATER_VALUE = 600; // Example: Value when water is at 'high' level
+
+  // Based on these, your thresholds would be:
+  const int YOUR_LOW_THRESHOLD    = 250; // Adjust this based on your sensor's value for LOW water
+  const int YOUR_MEDIUM_THRESHOLD = 400; // Adjust this based on your sensor's value for MEDIUM water
+  const int YOUR_HIGH_THRESHOLD   = 600; // Adjust this based on your sensor's value for HIGH water
+
+  // Logic to control the LEDs based on the water level
+  // The order of 'if' and 'else if' statements is important.
+  // We're checking from the highest water level down.
+  // This assumes that a HIGHER 'sensorValue' means MORE water.
+  // If your sensor works in reverse (lower value for more water), you'll need to
+  // reverse the comparison operators (e.g., '>' to '<') and the order of checks.
+
+  if (sensorValue >= YOUR_HIGH_THRESHOLD) {
+    // Water is at a high level
+    digitalWrite(highOutput, HIGH);   // Green LED ON
+    digitalWrite(mediumOutput, LOW);  // Yellow LED OFF
+    digitalWrite(lowOutput, LOW);     // Red LED OFF
+    Serial.println("HIGH");
+  }
+  else if (sensorValue >= YOUR_MEDIUM_THRESHOLD) {
+    // Water is at a medium level (but not high)
+    digitalWrite(highOutput, LOW);    // Green LED OFF
+    digitalWrite(mediumOutput, HIGH); // Yellow LED ON
+    digitalWrite(lowOutput, LOW);     // Red LED OFF
+    Serial.println("MEDIUM");
+  }
+  else if (sensorValue >= YOUR_LOW_THRESHOLD) {
+    // Water is at a low leve (but not medium or high)
+    digitalWrite(highOutput, LOW);    // Green LED OFF
+    digitalWrite(mediumOutput, LOW);  // Yellow LED OFF
+    digitalWrite(lowOutput, HIGH);    // Red LED ON
+    Serial.println("LOW");
+  }
+  else {
+    // Water is very low or completely dry
+    digitalWrite(highOutput, LOW);    // Green LED OFF
+    digitalWrite(mediumOutput, LOW);  // Yellow LED OFF
+    digitalWrite(lowOutput, LOW);     // Red LED OFF (all LEDs off)
+    Serial.println("EMPTY / Very Low");
+  }
+
+  delay(200); // Small delay to stabilize readings and avoid flickering
+} 
